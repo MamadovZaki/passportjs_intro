@@ -2,11 +2,11 @@ const express = require("express");
 const router = express.Router();
 
 router.get("/login", (request, response) => {
-  response.send("Login");
+  response.render("login");
 });
 
 router.get("/register", (request, response) => {
-  response.send("Register");
+  response.render("register");
 });
 
 module.exports = router;
