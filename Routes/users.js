@@ -75,6 +75,7 @@ router.post("/register", (request, response) => {
               .save()
               .then((user) => {
                 console.log("Saved new user to the database");
+                request.flash("success_msg", "You are now registered!");
                 response.redirect("/users/login");
               })
               .catch((error) => console.log(error));
