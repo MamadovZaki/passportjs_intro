@@ -1,6 +1,10 @@
 const express = require("express");
 const expressLayouts = require("express-ejs-layouts");
 const mongoose = require("mongoose");
+/** display flash messages using flash connect and sessions  */
+const flash = require("connect-flash");
+const session = require("express-session");
+
 const app = express();
 
 //* DB config
@@ -25,6 +29,25 @@ connectDB();
 //*ejs middleware
 app.use(expressLayouts);
 app.set("view engine", "ejs");
+
+//*Express session middleware
+app.use(
+  session({
+    secret: "keyboard cat",
+    resave: true,
+    saveUninitialized: true,
+  })
+);
+
+//*connect flash middleware
+app.use(flash());
+
+//global variables
+app.use((request, response, next) => {
+  response.locals.success_msg = request.flash("success_msg");
+  response.locals.error_msg = request.flash("error_msg");
+  next();
+});
 
 //*add bodyparser
 app.use(express.urlencoded({ extended: false }));
