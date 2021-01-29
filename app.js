@@ -26,6 +26,9 @@ connectDB();
 app.use(expressLayouts);
 app.set("view engine", "ejs");
 
+//*add bodyparser
+app.use(express.urlencoded({ extended: false }));
+
 //*Routes
 app.use("/", require("./Routes/index"));
 app.use("/users", require("./Routes/users"));
