@@ -1,5 +1,9 @@
 const express = require("express");
 const router = express.Router();
+const bcrypt = require("bcryptjs");
+
+//*User model
+const User = require("../Models/Users");
 
 //*login page
 router.get("/login", (request, response) => {
@@ -29,6 +33,55 @@ router.post("/register", (request, response) => {
   //*Check password length
   if (password.length < 6) {
     errors.push({ msg: "Password should be at least 6 characters" });
+  }
+
+  //*What happens after an error is displayed?
+  if (errors.length > 0) {
+    response.render("register", {
+      errors,
+      name,
+      email,
+      password,
+      password2,
+    });
+  } else {
+    //successful validation
+    // todo: check if user already exists
+    User.findOne({ email }).then((user) => {
+      if (user) {
+        errors.push({ msg: "Email is already registered" });
+        response.render("register", {
+          errors,
+          name,
+          email,
+          password,
+          password2,
+        });
+      } else {
+        //user doesn't exist
+        const newUser = new User({
+          name,
+          email,
+          password,
+        });
+        //has password
+        bcrypt.genSalt(10, (error, salt) =>
+          bcrypt.hash(newUser.password, salt, (error, hash) => {
+            if (error) throw error;
+            //*set password to hashed
+            newUser.password = hash;
+            //*save the user
+            newUser
+              .save()
+              .then((user) => {
+                console.log("Saved new user to the database");
+                response.redirect("/users/login");
+              })
+              .catch((error) => console.log(error));
+          })
+        );
+      }
+    });
   }
 });
 
