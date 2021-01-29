@@ -98,7 +98,7 @@ router.post("/login", (request, response, next) => {
 //todo: logout handle
 router.get("/logout", (request, response) => {
   request.logout();
-  request.flash("Succes_msg", "You are logged out out");
+  request.flash("success_msg", "You are logged out");
   response.redirect("/users/login");
 });
 module.exports = router;

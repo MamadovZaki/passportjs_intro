@@ -6,6 +6,8 @@ router.get("/", (request, response) => {
 });
 
 router.get("/dashboard", ensureAuthentication, (request, response) => {
-  response.render("dashboard");
+  response.render("dashboard", {
+    user: request.user,
+  });
 });
 module.exports = router;
